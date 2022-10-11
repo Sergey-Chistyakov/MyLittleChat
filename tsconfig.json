@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ESNext",
+    "sourceMap": false
+  },
+  "exclude": [
+    "node_modules", "webpack.config.js"
+  ]
+}
