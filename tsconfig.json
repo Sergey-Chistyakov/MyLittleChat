@@ -1,10 +1,13 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "ESNext",
     "target": "ESNext",
-    "sourceMap": false
+    "sourceMap": false,
+    "noEmitOnError": true,
+    "strictNullChecks": true,
+
   },
   "exclude": [
-    "node_modules", "webpack.config.js"
+    "node_modules", "webpack.config.js", "_server"
   ]
 }
