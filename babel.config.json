@@ -15,7 +15,9 @@
     [
       "babel-plugin-transform-remove-imports",
       {
-        "test": "react*"
+        "test": [
+          "react"
+        ]
       }
     ]
   ]
