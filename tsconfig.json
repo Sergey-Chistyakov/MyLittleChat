@@ -2,19 +2,24 @@
   "compilerOptions": {
     "module": "ESNext",
     "target": "ESNext",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "node",
     "sourceMap": false,
     "noEmitOnError": true,
+    "noEmit": true,
     "strictNullChecks": true,
     "jsx": "react",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "strict": true,
   },
   "exclude": [
-    "node_modules", "webpack.config.js", "_server"
+    "webpack.config.js", "_server"
   ],
 
   "baseUrl": ".",
   "paths": {
     "@modules/*": ["src/modules/*"],
     "*": ["node_modules/*"]
-  }
+  },
 }

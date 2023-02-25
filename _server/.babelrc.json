@@ -7,20 +7,12 @@
       }
     ],
     [
-      "@babel/preset-react",
-      {
-      }
-    ],
-    [
       "@babel/preset-typescript",
       {
         "extensions": ".ts",
-        "isTSX": true,
+        "isTSX": false,
         "allExtensions": true
       }
     ]
-  ],
-  "babelrcRoots": [
-    "_server/*"
   ]
 }

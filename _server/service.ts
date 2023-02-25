@@ -1,6 +1,4 @@
 import {Connection} from "mysql2";
-import {} from "bcrypt";
-
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -10,9 +8,9 @@ const mysqlConnection = global.connectionMySQL;
 
 function _checkPassword(login: string, password: string, onSuccess: (id: number) => void, onFailure: () => void): void {
 
-    mysqlConnection.query(`SELECT * FROM users WHERE name = "${login}" LIMIT 1`, function (error, results, fields) {
+    mysqlConnection.query(`SELECT * FROM users WHERE login = "${login}" LIMIT 1`, function (error, results, fields) {
         if (error) throw error;
-        if (results[0]?.password || !bcrypt.compareSync(password, results[0]?.password)) {
+        if (!results[0]?.password || !bcrypt.compareSync(password, results[0]?.password)) {
             onFailure();
             return;
         }
@@ -21,14 +19,10 @@ function _checkPassword(login: string, password: string, onSuccess: (id: number)
     });
 }
 
-function _checkAuthToken(userid: number, token: string): number {
-
-}
-
 function _createAuthToken(tokenBodyObj: { userid: number }): string {
     const lifetime = global.cookieLifetime.toString() + 'ms';
     const jwtSalt = global.jwtSalt;
-    return jwt.sign({userid: tokenBodyObj}, jwtSalt, {expiresIn: lifetime});
+    return jwt.sign(tokenBodyObj, jwtSalt, {expiresIn: lifetime});
 }
 
 //todo
@@ -59,7 +53,6 @@ function _transferDataToRedis(): Promise<any> {
 module.exports = {
     checkPassword: _checkPassword,
     createAuthToken: _createAuthToken,
-    checkAuthToken: _checkAuthToken,
     addNewUser: _addNewUser,
     transferDataToRedis: _transferDataToRedis,
     checkVacantLogin: _checkVacantLogin,

@@ -6,7 +6,6 @@ const fs = require("fs");
 const bcrypt = require('bcrypt');
 
 //Constants
-const jwtSalt = 'JqMTLgSgRG';
 const passwordHashSalt = bcrypt.genSaltSync(7);
 const cookieLifetime = 1000 * 60 * 5;
 Object.defineProperties(global, {
@@ -52,67 +51,61 @@ const service = module_exists('./service.ts') ? require('./service.ts') : requir
 app.use('/', function (req, res, next) {
     console.log(`${req.method}|${req.url}`);
     console.log(req.cookies);
-    console.log(req.signedCookies);
+    if (req.method === 'POST') console.log(req.get('MLC-request-type'));
     next();
 })
 
 //main page
 app.post('/', upload.none(), async function (req, res) {
     const requestType = req.get('MLC-request-type');
-    if (!req.body || !requestType) return;
-
-    switch (requestType) {
-        case 'login':
-            try {
+    if (!req.body || !requestType) {
+        console.log('reject', req.body, requestType);
+        return;
+    }
+    try {
+        switch (requestType) {
+            case 'login':
                 const login = req.body.login;
                 const password = req.body.password;
+                const dropCookieOnSessionEnd = req.body.remember !== 'true';
                 service.checkPassword(login, password, (userid) => {
-                    const randomAuthTokenSeed = Math.round(Math.random() * 9000 + 1000);
-                    const authToken = 'valid-name-' + login + randomAuthTokenSeed;
-                    if (!service.setAuthToken(userid, authToken, cookieLifetime)) throw 'Can`t assign auth token';
-                    res.cookie('authorized', authToken, {
+                    let authToken = service.createAuthToken({userid: userid});
+                    res.cookie('authorized', authToken, dropCookieOnSessionEnd ? undefined : {
                         maxAge: cookieLifetime,
                     }).redirect('/');
                 }, () => {
                     res.status(401).type('html').send('<h1>Access denied!</h1>');
                 });
-                s
-            } catch (err) {
-                res.status(500).send(err);
-            }
-            break;
+                break;
 
-        case 'check-vacant-login':
-            try {
-                const login = req.body.login;
+            case 'check-vacant-login':
+                //const login = req.body.login;
                 const isLoginVacant = await service.checkVacantLogin(login);
-                res.set('Response-Type').json({'isLoginVacant': isLoginVacant}).send();
-            } catch (err) {
-                res.status(500).send(err);
-            }
-            break;
+                res.json({'isLoginVacant': isLoginVacant}).send();
+                break;
 
-        case 'register':
-            try {
-                res.send('new user you are?');
-            } catch (err) {
-                res.status(500).send(err);
-            }
-            break;
+            case 'register':
+                res.send('<h1>new user you are?</h1>');
+                break;
 
-        default:
-            res.status(404).send('Invalid MLC-request-type header content.' + req.get('MLC-request-desc'));
+            default:
+                res.status(404).send('Invalid MLC-request-type header content.' + req.get('MLC-request-desc'));
+        }
+    } catch (err) {
+        res.status(500).send(err);
     }
 });
 
 // ---------------------------------------------------------------------------------------
 
 //redirect to loading page
-app.use(express.static("_bld/pages"));
+app.use('/authorization', express.static("./dist", {index: "index.html"}));
+// app.use('/components', express.static("./_bld/login/components"));
+
 
 app.use('/$', function (req, res, next) {
     if (req.cookies && req.cookies['auth'] === 'valid') res.send("<h1>Welcome!</h1>")
-    else res.redirect('login.html');
+    else res.redirect('./authorization');
 });
 
 // ---------------------------------------------------------------------------------------
