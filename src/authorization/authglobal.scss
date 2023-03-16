@@ -1,0 +1,54 @@
+// Colors and Fonts
+$color: (
+        primary: khaki,
+        secondary: lavender,
+        sucsess: blue,
+        error: red,
+        warning: yellow
+);
+
+$text-color: (
+        main: black,
+        link: green,
+        link-how: olive,
+        inactive: gray
+);
+
+%color {
+  @each $name, $value in $color {
+    &-#{$name} {
+      background-color: $value
+    }
+  }
+}
+
+// Forms
+%auth-form {
+  input:invalid {
+    &, &:required {
+      border: 2px solid red;
+    }
+  }
+
+  input {
+    display: block;
+  }
+
+  label {
+    user-select: none;
+    display: inline-block;
+
+    input[type='checkbox'] {
+      display: inline-block;
+    }
+
+    &.switch {
+      color: map-get($text-color, 'link');
+      cursor: pointer;
+
+      &:hover {
+        color: map-get($text-color, 'link-how');
+      }
+    }
+  }
+}

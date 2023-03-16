@@ -4,18 +4,18 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
 	mode: 'development',
 	entry: {
-		// authorization: {import:'./src/login/authorization.tsx', filename: '[name].[contenthash].bundle.js'},
-		test: {import: './src/test/main.jsx'},
+		authorization: {import:'./src/authorization/authorization.tsx', filename: '[name].[contenthash].bundle.js'},
+		// test: {import: './src/test/main.jsx'},
 	},
 	devtool: 'inline-source-map',
 	plugins: [
 		new HtmlWebpackPlugin({
 			title: 'Development - MLC',
-			template: path.resolve(__dirname, 'src/login/index.html'),
+			template: path.resolve(__dirname, 'src/authorization/index.html'),
 		}),
 	],
 	output: {
-		// filename: '[name].[contenthash].bundle.js',
+		filename: '[name].[contenthash].bundle.js',
 		// path: path.resolve(__dirname, 'dist'),
 		clean: true,
 	},
@@ -44,12 +44,8 @@ module.exports = {
 				}
 			},
 			{
-				test: /\.css$/i,
-				use: ['style-loader', 'css-loader'],
-			},
-			{
-				test: /\.(woff|woff2|eot|ttf|otf)$/i,
-				type: 'asset/resource',
+				test: /\.s[ac]ss$/i,
+				use: ['style-loader', 'css-loader', 'sass-loader'],
 			},
 		]
 	}

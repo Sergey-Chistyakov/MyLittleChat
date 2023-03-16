@@ -1,0 +1,6 @@
+@import "../authglobal";
+
+.component {
+  @extend %color-warning;
+  @extend %auth-form;
+}

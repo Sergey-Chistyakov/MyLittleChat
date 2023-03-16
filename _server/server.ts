@@ -64,7 +64,7 @@ app.post('/', upload.none(), async function (req, res) {
     }
     try {
         switch (requestType) {
-            case 'login':
+            case 'authorization':
                 const login = req.body.login;
                 const password = req.body.password;
                 const dropCookieOnSessionEnd = req.body.remember !== 'true';
@@ -78,8 +78,8 @@ app.post('/', upload.none(), async function (req, res) {
                 });
                 break;
 
-            case 'check-vacant-login':
-                //const login = req.body.login;
+            case 'check-vacant-authorization':
+                //const authorization = req.body.authorization;
                 const isLoginVacant = await service.checkVacantLogin(login);
                 res.json({'isLoginVacant': isLoginVacant}).send();
                 break;
@@ -100,7 +100,7 @@ app.post('/', upload.none(), async function (req, res) {
 
 //redirect to loading page
 app.use('/authorization', express.static("./dist", {index: "index.html"}));
-// app.use('/components', express.static("./_bld/login/components"));
+// app.use('/components', express.static("./_bld/authorization/components"));
 
 
 app.use('/$', function (req, res, next) {
